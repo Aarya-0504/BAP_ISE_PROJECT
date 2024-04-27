@@ -3,12 +3,15 @@ import plotly.graph_objs as go
 import dash
 from dash import dcc, html
 from dash.dependencies import Input, Output, State
+from pages import se_it
 
 df = pd.read_csv('F:\\React_projs2\\BAP_ISE_PROJECT\\data.csv')
+df2=pd.read_csv('F:\\React_projs2\\BAP_ISE_PROJECT\\sample_data_se_it.csv')
 # Assuming you have your data in a DataFrame named 'df'
 
 # Create a list of subjects
 subjects = ['DS_KKD', 'DWM_SK', 'INS - RP', 'ML_NK', 'ITL_AH']
+#subjects_se=['DAA','CCN','DSGT','OS','LA']
 
 # Create a list of months
 months = ['JAN', 'FEB', 'MAR']
@@ -21,9 +24,9 @@ colors = ['rgb(255, 0, 0)',  # Red
     'rgb(255, 0, 255)',]
 
 # Create the app
-app = dash.Dash(__name__, external_stylesheets=['https://codepen.io/chriddyp/pen/bWLwgP.css', 'assets/styles.css'], suppress_callback_exceptions=True)
+app = dash.Dash(__name__,pages_folder='pages', use_pages=True, external_stylesheets=['https://codepen.io/chriddyp/pen/bWLwgP.css', 'assets/styles.css','https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css'], suppress_callback_exceptions=True)
 
-
+#dash.register_page(__name__, path='/se-it', name='SE IT', layout=se_it.layout)
 # Define the sidebar layout
 sidebar = html.Div(
     [
@@ -38,6 +41,10 @@ sidebar = html.Div(
             [
                 html.Li(html.A('Introduction', href='/')),
                 html.Li(html.A('TE IT Page', href='/btech-it')),
+                 html.Div(children=[
+	    dcc.Link(page['name'], href=page["relative_path"], className="btn btn-dark m-2 fs-5")\
+			  for page in dash.page_registry.values()]
+	),
             ],
             style={'list-style-type': 'none', 'padding': 0},
         ),
@@ -90,6 +97,8 @@ btech_it_page = html.Div(
     className='content',
 )
 
+
+
 # Define the app layout
 app.layout = html.Div(
     [
@@ -105,6 +114,8 @@ app.layout = html.Div(
 def display_page(pathname):
     if pathname == '/btech-it':
         return btech_it_page
+    elif pathname == '/se-it':  # Add this elif block for the SE IT page
+        return se_it.layout
     else:
         return introduction_page
     
@@ -188,6 +199,8 @@ def update_figures(bar_chart, heatmap, scatter_plot, pie_chart):
     pie_chart.update_layout(layout_dark)
 
     return bar_chart, heatmap, scatter_plot, pie_chart
+
+
 
 
 if __name__ == '__main__':
