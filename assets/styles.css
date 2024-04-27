@@ -1,0 +1,63 @@
+body {
+    background-color: #222222; /* Dark gray background color */
+    color: #FFFFFF; /* White text color */
+}
+
+
+#bar-chart, #heatmap, #scatter-plot, #pie-chart {
+    background-color: #333333; /* Darker gray background color for charts */
+    
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    padding: 20px;
+}
+
+.figure-container {
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+/* styles.css */
+
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 235px;
+    height: 100%;
+    background-color: #989898;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.sidebar ul {
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 10px;
+}
+
+.sidebar ul li a {
+    color: #666;
+    text-decoration: none;
+}
+
+.sidebar ul li a:hover {
+    color: #000;
+    font-weight: bold;
+}
+
+.content {
+    margin-left: 250px; /* Adjust this value based on the sidebar width */
+    padding: 20px;
+}
