@@ -1,10 +1,11 @@
 import pandas as pd
 import plotly.graph_objs as go
 import dash
-from dash import dcc, html, callback
+from dash import dcc, html, callback, dash_table
 from dash.dependencies import Input, Output, State
-dash.register_page(__name__, path='/se-it', name="se_it")
-df=pd.read_csv('F:\\React_projs2\\BAP_ISE_PROJECT\\sample_data_se_it.csv')
+#dash.register_page(__name__, path='/se-it',name="se_it")
+df=pd.read_csv('F:\\React_projs2\\BAP_ISE_PROJECT\\se_it_data.csv')
+
 subjects_se=['DAA','CCN','DSGT','OS','LA']
 colors = ['rgb(255, 0, 0)',  # Red
     'rgb(0, 255, 0)',  # Green
@@ -45,7 +46,7 @@ se_it_page = html.Div(
     className='content',
 )
 
-layout = html.Div(children=
+layout = html.Div(
     [
         dcc.Location(id='url', refresh=False),
         se_it_page,
@@ -70,7 +71,7 @@ def update_figures2(bar_chart2, heatmap2, scatter_plot2):
     bar_chart2.update_yaxes(title_text='Average Attendance Percentage')
 
     # Heatmap for attendance percentage by month and subject
-    attendance_data = [df[f'{subject}'].mean() for subject in subjects_se]
+    attendance_data = [df[f'{subject}_AVG'].mean() for subject in subjects_se]
     heatmap2 = go.Figure(data=go.Heatmap(y=attendance_data, x=subjects_se, colorscale='Viridis'))
     heatmap2.update_xaxes(title_text='Subject')
     heatmap2.update_yaxes(title_text='Month')
@@ -78,8 +79,8 @@ def update_figures2(bar_chart2, heatmap2, scatter_plot2):
     # Scatter plot for attendance percentage vs. lecture count
     scatter_plot2 = go.Figure()
     for i, subject in enumerate(subjects_se):
-        scatter_plot2.add_trace(go.Scatter(x=df[f'{subject}_no'] + df[f'{subject}_no'] + df[f'{subject}_no'],
-                                          y=df[f'{subject}'] ,
+        scatter_plot2.add_trace(go.Scatter(x=df[f'{subject}_AVG'], 
+                                          y=df[f'{subject}_AVG_no'] ,
                                           mode='markers', marker=dict(color=colors[i]), name=subject))
     scatter_plot2.update_xaxes(title_text='Total Lecture Count')
     scatter_plot2.update_yaxes(title_text='Attendance Percentage')

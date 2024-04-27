@@ -3,10 +3,10 @@ import plotly.graph_objs as go
 import dash
 from dash import dcc, html
 from dash.dependencies import Input, Output, State
-from pages import se_it
+from pages.se_it import se_it_page, update_figures2
 
 df = pd.read_csv('F:\\React_projs2\\BAP_ISE_PROJECT\\data.csv')
-df2=pd.read_csv('F:\\React_projs2\\BAP_ISE_PROJECT\\sample_data_se_it.csv')
+#df2=pd.read_csv('F:\\React_projs2\\BAP_ISE_PROJECT\\sample_data_se_it.csv')
 # Assuming you have your data in a DataFrame named 'df'
 
 # Create a list of subjects
@@ -24,9 +24,10 @@ colors = ['rgb(255, 0, 0)',  # Red
     'rgb(255, 0, 255)',]
 
 # Create the app
-app = dash.Dash(__name__,pages_folder='pages', use_pages=True, external_stylesheets=['https://codepen.io/chriddyp/pen/bWLwgP.css', 'assets/styles.css','https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css'], suppress_callback_exceptions=True)
+app = dash.Dash(__name__, pages_folder='pages', use_pages=True, external_stylesheets=['https://codepen.io/chriddyp/pen/bWLwgP.css', 'assets/styles.css'], suppress_callback_exceptions=True)
+#app.layout = se_it.layout
+#dash.register_page("se_it")
 
-#dash.register_page(__name__, path='/se-it', name='SE IT', layout=se_it.layout)
 # Define the sidebar layout
 sidebar = html.Div(
     [
@@ -41,10 +42,8 @@ sidebar = html.Div(
             [
                 html.Li(html.A('Introduction', href='/')),
                 html.Li(html.A('TE IT Page', href='/btech-it')),
-                 html.Div(children=[
-	    dcc.Link(page['name'], href=page["relative_path"], className="btn btn-dark m-2 fs-5")\
-			  for page in dash.page_registry.values()]
-	),
+                html.Li(html.A('SE IT Page', href='/se-it')),
+                 
             ],
             style={'list-style-type': 'none', 'padding': 0},
         ),
@@ -105,6 +104,12 @@ app.layout = html.Div(
         dcc.Location(id='url', refresh=False),
         sidebar,
         html.Div(id='page-content'),
+        html.Div([
+        html.Div(
+            dcc.Link(f"{page['name']} - {page['path']}", href=page["relative_path"])
+        ) for page in dash.page_registry.values()
+    ]),
+        dash.page_container
     ]
 )
 
@@ -115,7 +120,7 @@ def display_page(pathname):
     if pathname == '/btech-it':
         return btech_it_page
     elif pathname == '/se-it':  # Add this elif block for the SE IT page
-        return se_it.layout
+        return se_it_page
     else:
         return introduction_page
     
@@ -200,7 +205,18 @@ def update_figures(bar_chart, heatmap, scatter_plot, pie_chart):
 
     return bar_chart, heatmap, scatter_plot, pie_chart
 
-
+# Callback to update figures on SE IT page
+@app.callback(
+    [Output('bar-chart2', 'figure'),
+     Output('heatmap2', 'figure'),
+     Output('scatter-plot2', 'figure')],
+    [Input('bar-chart2', 'figure'),
+     Input('heatmap2', 'figure'),
+     Input('scatter-plot2', 'figure')]
+)
+def update_figures_se_it(bar_chart2, heatmap2, scatter_plot2):
+    # Call the update_figures2 function from se_it.py to update figures on SE IT page
+    return update_figures2(bar_chart2, heatmap2, scatter_plot2)
 
 
 if __name__ == '__main__':
