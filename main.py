@@ -8,13 +8,17 @@ df = pd.read_csv('F:\\React_projs2\\BAP_ISE_PROJECT\\data.csv')
 # Assuming you have your data in a DataFrame named 'df'
 
 # Create a list of subjects
-subjects = ['DS_KKD', 'DWM_SK', 'INS - RP']
+subjects = ['DS_KKD', 'DWM_SK', 'INS - RP', 'ML_NK', 'ITL_AH']
 
 # Create a list of months
 months = ['JAN', 'FEB', 'MAR']
 
 # Create a list of colors for each subject
-colors = ['rgb(255, 0, 0)', 'rgb(0, 255, 0)', 'rgb(0, 0, 255)']
+colors = ['rgb(255, 0, 0)',  # Red
+    'rgb(0, 255, 0)',  # Green
+    'rgb(0, 0, 255)',  # Blue
+    'rgb(255, 255, 0)',  # Yellow
+    'rgb(255, 0, 255)',]
 
 # Create the app
 app = dash.Dash(__name__, external_stylesheets=['https://codepen.io/chriddyp/pen/bWLwgP.css', 'assets/styles.css'], suppress_callback_exceptions=True)
@@ -33,7 +37,7 @@ sidebar = html.Div(
         html.Ul(
             [
                 html.Li(html.A('Introduction', href='/')),
-                html.Li(html.A('BTECH IT Page', href='/btech-it')),
+                html.Li(html.A('TE IT Page', href='/btech-it')),
             ],
             style={'list-style-type': 'none', 'padding': 0},
         ),
@@ -55,11 +59,33 @@ introduction_page = html.Div(
 # Define the BTECH IT page layout
 btech_it_page = html.Div(
     [
-        html.H1('BTECH IT Page'),
-        dcc.Graph(id='bar-chart'),
-        dcc.Graph(id='heatmap'),
-        dcc.Graph(id='scatter-plot'),
-        dcc.Graph(id='pie-chart'),
+        html.H1('TE IT Page'),
+        html.Div(
+            [
+                html.Div(
+                    dcc.Graph(id='bar-chart'),
+                    className='figure-container',
+                ),
+                html.Div(
+                    dcc.Graph(id='heatmap'),
+                    className='figure-container',
+                ),
+            ],
+            className='grid-container',
+        ),
+        html.Div(
+            [
+                html.Div(
+                    dcc.Graph(id='scatter-plot'),
+                    className='figure-container',
+                ),
+                html.Div(
+                    dcc.Graph(id='pie-chart'),
+                    className='figure-container',
+                ),
+            ],
+            className='grid-container',
+        ),
     ],
     className='content',
 )
