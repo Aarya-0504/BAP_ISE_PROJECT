@@ -71,7 +71,7 @@ def update_figures2(bar_chart2, heatmap2, scatter_plot2):
     bar_chart2.update_yaxes(title_text='Average Attendance Percentage')
 
     # Heatmap for attendance percentage by month and subject
-    attendance_data = [df[f'{subject}_AVG'].mean() for subject in subjects_se]
+    attendance_data = [df[f'{subject}_AVG'] for subject in subjects_se]
     heatmap2 = go.Figure(data=go.Heatmap(y=attendance_data, x=subjects_se, colorscale='Viridis'))
     heatmap2.update_xaxes(title_text='Subject')
     heatmap2.update_yaxes(title_text='Month')

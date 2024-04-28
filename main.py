@@ -4,7 +4,7 @@ import dash
 from dash import dcc, html
 from dash.dependencies import Input, Output, State
 from pages.se_it import se_it_page, update_figures2
-
+from pages.te_ds_ml_dc import te_ds_page, update_figures3
 df = pd.read_csv('F:\\React_projs2\\BAP_ISE_PROJECT\\data.csv')
 #df2=pd.read_csv('F:\\React_projs2\\BAP_ISE_PROJECT\\sample_data_se_it.csv')
 # Assuming you have your data in a DataFrame named 'df'
@@ -43,6 +43,7 @@ sidebar = html.Div(
                 html.Li(html.A('Introduction', href='/')),
                 html.Li(html.A('TE IT Page', href='/btech-it')),
                 html.Li(html.A('SE IT Page', href='/se-it')),
+                html.Li(html.A('TE DS Page', href='/te-ds')),
                  
             ],
             style={'list-style-type': 'none', 'padding': 0},
@@ -104,11 +105,11 @@ app.layout = html.Div(
         dcc.Location(id='url', refresh=False),
         sidebar,
         html.Div(id='page-content'),
-        html.Div([
-        html.Div(
-            dcc.Link(f"{page['name']} - {page['path']}", href=page["relative_path"])
-        ) for page in dash.page_registry.values()
-    ]),
+    #     html.Div([
+    #     html.Div(
+    #         dcc.Link(f"{page['name']} - {page['path']}", href=page["relative_path"])
+    #     ) for page in dash.page_registry.values()
+    # ]),
         dash.page_container
     ]
 )
@@ -121,6 +122,8 @@ def display_page(pathname):
         return btech_it_page
     elif pathname == '/se-it':  # Add this elif block for the SE IT page
         return se_it_page
+    elif pathname=='/te-ds':
+        return te_ds_page
     else:
         return introduction_page
     
@@ -218,6 +221,21 @@ def update_figures_se_it(bar_chart2, heatmap2, scatter_plot2):
     # Call the update_figures2 function from se_it.py to update figures on SE IT page
     return update_figures2(bar_chart2, heatmap2, scatter_plot2)
 
+
+@app.callback(
+    [Output('bar-chart3', 'figure'),
+     Output('heatmap3', 'figure'),
+     Output('scatter-plot3', 'figure'),
+     Output('pie-chart3', 'figure')],
+    [Input('bar-chart3', 'figure'),
+     Input('heatmap3', 'figure'),
+     Input('scatter-plot3', 'figure'),
+     Input('pie-chart3', 'figure')])
+
+
+def update_figures_te_ds(bar_chart3, heatmap3, scatter_plot3,pie_chart3):
+    # Call the update_figures2 function from te-ds.py to update figures on TE-DS page
+    return update_figures3(bar_chart3, heatmap3, scatter_plot3,pie_chart3)
 
 if __name__ == '__main__':
     app.run_server(debug=True)
