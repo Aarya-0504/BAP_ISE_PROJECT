@@ -13,8 +13,8 @@ body {
     
 }
 /* Dark background color for the plot div */
-.attendance-marks-scatter {
-    background-color: rgb(22, 22, 22);
+#attendance-marks-scatter {
+    background-color:#333333;
 }
 
 /* Dark background color for dropdown bars */

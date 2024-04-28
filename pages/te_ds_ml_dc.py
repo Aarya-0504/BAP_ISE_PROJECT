@@ -32,10 +32,13 @@ te_ds_page = html.Div(
                         {'label': 'DC', 'value': 'DC'},
                         {'label': 'NLP', 'value': 'NLP'},
                         {'label': 'BCT', 'value': 'BCT'},
+                        {'label': 'BAP', 'value': 'BAP'},
                         # Add more subjects as needed
                     ],
-                    value=['ML', 'DC'],  # Default selected subjects
+                    #value=['ML', 'DC'],  # Default selected subjects
                     multi=True,  # Allow multiple selections
+                    style={'color': 'white'},  # Text color
+                    className='dropdown-style'  # Custom class for dropdown style
                 ),
             ],
             className='dropdown-container',

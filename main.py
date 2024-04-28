@@ -9,10 +9,13 @@ from pages.marks_vs_att_corr import corr_page, update_scatter_plot
 df = pd.read_csv('F:\\React_projs2\\BAP_ISE_PROJECT\\data.csv')
 df2=pd.read_csv('F:\\React_projs2\\BAP_ISE_PROJECT\\te_cs_nlp.csv')
 df3=pd.read_csv('F:\\React_projs2\\BAP_ISE_PROJECT\\marks_att_corr.csv')
+df4=pd.read_csv('F:\\React_projs2\\BAP_ISE_PROJECT\\te_cs_bct.csv')
+df5=pd.read_csv('F:\\React_projs2\\BAP_ISE_PROJECT\\te_ds_bap_data.csv')
 subjects_te=['ML','DC']
 subjects_nlp=['NLP_TH']
-subjects_bap=['BAP']
-subjects_bct=['BCT']
+subjects_bap=['BAP_TH']
+subjects_bct=['BCT_TH']
+
 #df2=pd.read_csv('F:\\React_projs2\\BAP_ISE_PROJECT\\sample_data_se_it.csv')
 # Assuming you have your data in a DataFrame named 'df'
 
@@ -149,7 +152,7 @@ def update_dynamic_plots(selected_subjects):
         if subject == 'BCT':
             bct_plots_div=html.Div(
     [
-        html.H1('TE DS BCT Page'),
+        html.H3('TE DS BCT Page'),
         html.Div(
             [
                 html.Div(
@@ -180,6 +183,41 @@ def update_dynamic_plots(selected_subjects):
     className='content',
 )
             dynamic_divs.append(bct_plots_div)
+
+        if subject == 'BAP':
+            bap_plots_div=html.Div(
+    [
+        html.H3('TE DS BAP Page'),
+        html.Div(
+            [
+                html.Div(
+                    dcc.Graph(id='bar-chart6'),
+                    className='figure-container',
+                ),
+                html.Div(
+                    dcc.Graph(id='heatmap6'),
+                    className='figure-container',
+                ),
+            ],
+            className='grid-container',
+        ),
+        html.Div(
+            [
+                html.Div(
+                    dcc.Graph(id='scatter-plot6'),
+                    className='figure-container',
+                ),
+                html.Div(
+                    dcc.Graph(id='pie-chart6'),
+                    className='figure-container',
+                ),
+            ],
+            className='grid-container',
+        ),
+    ],
+    className='content',
+)
+            dynamic_divs.append(bap_plots_div)
     return dynamic_divs
     
 # Define the app layout
@@ -347,7 +385,7 @@ def update_figures_te_ds_nlp(selected_subjects):
         scatter_plot4 = go.Figure()
         for i, subject in enumerate(subjects_nlp):
             scatter_plot4.add_trace(go.Scatter(x=df2[f'{subject}_JAN_no'] + df2[f'{subject}_FEB_no'] + df2[f'{subject}_MAR_no'],
-                                            y=df2[f'{subject}_JAN'] + df2[f'{subject}_FEB'] + df2[f'{subject}_MAR'],
+                                            y=(df2[f'{subject}_JAN'] + df2[f'{subject}_FEB'] + df2[f'{subject}_MAR'])/3,
                                             mode='markers', marker=dict(color=colors[i]), name=subject))
         scatter_plot4.update_xaxes(title_text='Total Lecture Count')
         scatter_plot4.update_yaxes(title_text='Attendance Percentage')
@@ -386,6 +424,138 @@ def update_figures_te_ds_nlp(selected_subjects):
         pie_chart4.update_layout(layout_dark)
 
         return bar_chart4, heatmap4, scatter_plot4, pie_chart4
+    return None,None,None,None
+
+
+@app.callback(
+    [Output('bar-chart5', 'figure'),
+     Output('heatmap5', 'figure'),
+     Output('scatter-plot5', 'figure'),
+     Output('pie-chart5', 'figure')],
+    [Input('subject-dropdown', 'value')])
+def update_figures_te_ds_bct(selected_subjects):
+    if 'BCT' in selected_subjects:
+        bar_chart5 = go.Figure()
+        bar_chart5.add_trace(go.Bar(x=subjects_bct, y=[df4[f'{subject}_AVG'].mean() for subject in subjects_bct], marker_color=colors))
+        bar_chart5.update_xaxes(title_text='Subject')
+        bar_chart5.update_yaxes(title_text='Average Attendance Percentage')
+
+        # Heatmap for attendance percentage by month and subject
+        attendance_data = [[df4[f'{subject}_{month}'].mean() for subject in subjects_bct] for month in months]
+        heatmap5 = go.Figure(data=go.Heatmap(z=attendance_data, x=subjects_bct, y=months, colorscale='Viridis'))
+        heatmap5.update_xaxes(title_text='Subject')
+        heatmap5.update_yaxes(title_text='Month')
+
+        # Scatter plot for attendance percentage vs. lecture count
+        scatter_plot5 = go.Figure()
+        for i, subject in enumerate(subjects_bct):
+            y_values = (df4[f'{subject}_JAN'] + df4[f'{subject}_FEB'] + df4[f'{subject}_MAR']) / 3
+            scatter_plot5.add_trace(go.Scatter(x=df4[f'{subject}_JAN_no'] + df4[f'{subject}_FEB_no'] + df4[f'{subject}_MAR_no'],
+                                            y=y_values,
+                                            mode='markers', marker=dict(color=colors[i]), name=subject))
+        scatter_plot5.update_xaxes(title_text='Total Lecture Count')
+        scatter_plot5.update_yaxes(title_text='Attendance Percentage')
+
+        # Pie chart for distribution of attendance ranges
+        attendance_ranges = [0, 20, 40, 60, 80, 100]
+        attendance_data = []
+        for subject in subjects_bct:
+            attendance_count=[
+            sum(
+                ((df4[f'{subject}_JAN'] + df4[f'{subject}_FEB'] + df4[f'{subject}_MAR']) / 3 >= r1) &
+                ((df4[f'{subject}_JAN'] + df4[f'{subject}_FEB'] + df4[f'{subject}_MAR']) / 3 < r2)
+            )
+            for r1, r2 in zip(attendance_ranges[:-1], attendance_ranges[1:])]
+            attendance_data.append(attendance_count)
+
+        
+        pie_chart5 = go.Figure(
+            data=[
+                go.Pie(
+                    labels=[f'{r1}-{r2}%' for r1, r2 in zip(attendance_ranges[:-1], attendance_ranges[1:])],
+                    values=sum(attendance_data, []),
+                    name='Attendance Distribution'
+                )
+            ]
+        )
+
+        layout_dark = go.Layout(
+            plot_bgcolor='rgb(20, 20, 20)',  # Dark background color
+            paper_bgcolor='rgb(20, 20, 20)',  # Dark background color for plot area
+            font=dict(color='white'),  # Font color
+        )
+        bar_chart5.update_layout(layout_dark)
+        heatmap5.update_layout(layout_dark)
+        scatter_plot5.update_layout(layout_dark)
+        pie_chart5.update_layout(layout_dark)
+
+        return bar_chart5, heatmap5, scatter_plot5, pie_chart5
+    return None,None,None,None
+
+#BAPPPPP
+@app.callback(
+    [Output('bar-chart6', 'figure'),
+     Output('heatmap6', 'figure'),
+     Output('scatter-plot6', 'figure'),
+     Output('pie-chart6', 'figure')],
+    [Input('subject-dropdown', 'value')])
+def update_figures_te_ds_bap(selected_subjects):
+    if 'BAP' in selected_subjects:
+        bar_chart6 = go.Figure()
+        bar_chart6.add_trace(go.Bar(x=subjects_bap, y=[df5[f'{subject}_AVG'].mean() for subject in subjects_bap], marker_color=colors))
+        bar_chart6.update_xaxes(title_text='BAP')
+        bar_chart6.update_yaxes(title_text='Average Attendance Percentage')
+
+        # Heatmap for attendance percentage by month and subject
+        attendance_data = [[df5[f'{subject}_{month}'].mean() for subject in subjects_bap] for month in months]
+        heatmap6 = go.Figure(data=go.Heatmap(z=attendance_data, x=subjects_bap, y=months, colorscale='Viridis'))
+        heatmap6.update_xaxes(title_text='BAP')
+        heatmap6.update_yaxes(title_text='Month')
+
+        # Scatter plot for attendance percentage vs. lecture count
+        scatter_plot6 = go.Figure()
+        for i, subject in enumerate(subjects_bap):
+            y_values = (df5[f'{subject}_JAN'] + df5[f'{subject}_FEB'] + df5[f'{subject}_MAR']) / 3
+            scatter_plot6.add_trace(go.Scatter(x=df5[f'{subject}_JAN_no'] + df5[f'{subject}_FEB_no'] + df5[f'{subject}_MAR_no'],
+                                            y=y_values,
+                                            mode='markers', marker=dict(color=colors[i]), name=subject))
+        scatter_plot6.update_xaxes(title_text='Total Lecture Count')
+        scatter_plot6.update_yaxes(title_text='Attendance Percentage')
+
+        # Pie chart for distribution of attendance ranges
+        attendance_ranges = [0, 20, 40, 60, 80, 100]
+        attendance_data = []
+        for subject in subjects_bap:
+            attendance_count=[
+            sum(
+                ((df5[f'{subject}_JAN'] + df5[f'{subject}_FEB'] + df5[f'{subject}_MAR']) / 3 >= r1) &
+                ((df5[f'{subject}_JAN'] + df5[f'{subject}_FEB'] + df5[f'{subject}_MAR']) / 3 < r2)
+            )
+            for r1, r2 in zip(attendance_ranges[:-1], attendance_ranges[1:])]
+            attendance_data.append(attendance_count)
+
+        
+        pie_chart6 = go.Figure(
+            data=[
+                go.Pie(
+                    labels=[f'{r1}-{r2}%' for r1, r2 in zip(attendance_ranges[:-1], attendance_ranges[1:])],
+                    values=sum(attendance_data, []),
+                    name='Attendance Distribution'
+                )
+            ]
+        )
+
+        layout_dark = go.Layout(
+            plot_bgcolor='rgb(20, 20, 20)',  # Dark background color
+            paper_bgcolor='rgb(20, 20, 20)',  # Dark background color for plot area
+            font=dict(color='white'),  # Font color
+        )
+        bar_chart6.update_layout(layout_dark)
+        heatmap6.update_layout(layout_dark)
+        scatter_plot6.update_layout(layout_dark)
+        pie_chart6.update_layout(layout_dark)
+
+        return bar_chart6, heatmap6, scatter_plot6, pie_chart6
     return None,None,None,None
 
 @app.callback(
