@@ -113,7 +113,7 @@ def update_figures3(bar_chart3, heatmap3, scatter_plot3, pie_chart3):
     scatter_plot3 = go.Figure()
     for i, subject in enumerate(subjects_te):
         scatter_plot3.add_trace(go.Scatter(x=df[f'{subject}_JAN_no'] + df[f'{subject}_FEB_no'] + df[f'{subject}_MAR_no'],
-                                          y=df[f'{subject}_JAN'] + df[f'{subject}_FEB'] + df[f'{subject}_MAR'],
+                                          y=(df[f'{subject}_JAN'] + df[f'{subject}_FEB'] + df[f'{subject}_MAR'])/3,
                                           mode='markers', marker=dict(color=colors[i]), name=subject))
     scatter_plot3.update_xaxes(title_text='Total Lecture Count')
     scatter_plot3.update_yaxes(title_text='Attendance Percentage')
@@ -182,7 +182,7 @@ def update_figures4(bar_chart4, heatmap4, scatter_plot4, pie_chart4):
     scatter_plot4 = go.Figure()
     for i, subject in enumerate(subjects_nlp):
         scatter_plot4.add_trace(go.Scatter(x=df2[f'{subject}_JAN_no'] + df2[f'{subject}_FEB_no'] + df2[f'{subject}_MAR_no'],
-                                          y=df2[f'{subject}_JAN'] + df2[f'{subject}_FEB'] + df2[f'{subject}_MAR'],
+                                          y=(df2[f'{subject}_JAN'] + df2[f'{subject}_FEB'] + df2[f'{subject}_MAR'])/3,
                                           mode='markers', marker=dict(color=colors[i]), name=subject))
     scatter_plot4.update_xaxes(title_text='Total Lecture Count')
     scatter_plot4.update_yaxes(title_text='Attendance Percentage')

@@ -41,13 +41,13 @@ app = dash.Dash(__name__, pages_folder='pages', use_pages=True, external_stylesh
 # Define the sidebar layout
 sidebar = html.Div(
     [
-        html.H2('Navigation'),
-        html.Button(
-            'Toggle Sidebar',
-            id='toggle-sidebar-button',
-            n_clicks=0,
-            style={'margin-bottom': '20px'},
-        ),
+        html.H2('AttendEase'),
+        # html.Button(
+        #     'Toggle Sidebar',
+        #     id='toggle-sidebar-button',
+        #     n_clicks=0,
+        #     style={'margin-bottom': '20px'},
+        # ),
         html.Ul(
             [
                 html.Li(html.A('Introduction', href='/')),
@@ -584,6 +584,36 @@ def update_scatter_plot(selected_gender, selected_subject):
     )
 
     return scatter_plot
+
+@app.callback(
+    Output('heatmap7', 'figure'),
+    [Input('gender-dropdown', 'value'),
+     Input('subject-dropdown', 'value')]
+)
+def update_heatmap(selected_gender, selected_subject):
+    filtered_df = df3[df3['Gender'] == selected_gender]
+
+    # Get the column names for the selected subject
+    attendance_column = f'{selected_subject}_Th_%Attended'
+    marks_column = f'{selected_subject}_Marks'
+
+    # Create heatmap data
+    heatmap_data = filtered_df.groupby(attendance_column)[marks_column].mean().reset_index()
+
+    heatmap = go.Figure(data=go.Heatmap(
+        z=heatmap_data[marks_column].values.reshape(1, -1),  # Reshape data for heatmap
+        x=heatmap_data[attendance_column].values,
+        y=['Average Marks'],  # You can customize y-axis labels if needed
+        colorscale='Viridis',  # Choose a colorscale
+    ))
+
+    heatmap.update_layout(
+        title=f'Heatmap: Attendance vs Marks for {selected_subject}',
+        xaxis_title='Attendance Percentage',
+        yaxis_title='Average Marks',
+    )
+
+    return heatmap
 
 if __name__ == '__main__':
     app.run_server(debug=True)
