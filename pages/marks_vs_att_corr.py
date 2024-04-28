@@ -39,7 +39,7 @@ corr_page =html.Div([
     html.H1('Attendance vs Marks Analysis using Heatmap'),
     html.Label('Select Gender:'),
     dcc.Dropdown(
-        id='gender-dropdown',
+        id='gender-dropdown2',
         options=[
             {'label': 'Male', 'value': 'M'},
             {'label': 'Female', 'value': 'F'},
@@ -49,7 +49,7 @@ corr_page =html.Div([
     ),
     html.Label('Select Subject:'),
     dcc.Dropdown(
-        id='subject-dropdown',
+        id='subject-dropdown2',
         options=[{'label': subj, 'value': subj} for subj in subjects],
         value=subjects[0],  # Default selected subject
         clearable=False,
@@ -68,31 +68,31 @@ layout = html.Div(
     ]
 )
 
-@callback(
-    Output('attendance-marks-scatter', 'figure'),
-    [Input('gender-dropdown', 'value')]
-)
-def update_scatter_plot(selected_gender):
-    filtered_df = df[df['Gender'] == selected_gender]
+# @callback(
+#     Output('attendance-marks-scatter', 'figure'),
+#     [Input('gender-dropdown', 'value')]
+# )
+# def update_scatter_plot(selected_gender):
+#     filtered_df = df[df['Gender'] == selected_gender]
 
-    scatter_plot = go.Figure()
-    scatter_plot.add_trace(go.Scatter(
-        x=filtered_df['CCN_Th_%Attended'],
-        y=filtered_df['CCN_Marks'],
-        mode='markers',
-        marker=dict(color='blue'),  # Customize marker color if needed
-        text=filtered_df['Name'],  # Hover text with student names
-        hoverinfo='text+x+y',
-        name='CCN'  # Legend label
-    ))
-    scatter_plot.update_layout(
-        title='Attendance vs Marks',
-        xaxis_title='Attendance Percentage',
-        yaxis_title='Marks',
-        showlegend=True,
-    )
+#     scatter_plot = go.Figure()
+#     scatter_plot.add_trace(go.Scatter(
+#         x=filtered_df['CCN_Th_%Attended'],
+#         y=filtered_df['CCN_Marks'],
+#         mode='markers',
+#         marker=dict(color='blue'),  # Customize marker color if needed
+#         text=filtered_df['Name'],  # Hover text with student names
+#         hoverinfo='text+x+y',
+#         name='CCN'  # Legend label
+#     ))
+#     scatter_plot.update_layout(
+#         title='Attendance vs Marks',
+#         xaxis_title='Attendance Percentage',
+#         yaxis_title='Marks',
+#         showlegend=True,
+#     )
 
-    return scatter_plot 
+#     return scatter_plot 
 
 
 @callback(

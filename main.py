@@ -5,7 +5,7 @@ from dash import dcc, html
 from dash.dependencies import Input, Output, State
 from pages.se_it import se_it_page, update_figures2
 from pages.te_ds_ml_dc import te_ds_page, update_figures3, update_figures4
-from pages.marks_vs_att_corr import corr_page, update_scatter_plot
+from pages.marks_vs_att_corr import corr_page
 df = pd.read_csv('F:\\React_projs2\\BAP_ISE_PROJECT\\data.csv')
 df2=pd.read_csv('F:\\React_projs2\\BAP_ISE_PROJECT\\te_cs_nlp.csv')
 df3=pd.read_csv('F:\\React_projs2\\BAP_ISE_PROJECT\\marks_att_corr.csv')
@@ -587,33 +587,33 @@ def update_scatter_plot(selected_gender, selected_subject):
 
 @app.callback(
     Output('heatmap7', 'figure'),
-    [Input('gender-dropdown', 'value'),
-     Input('subject-dropdown', 'value')]
+    [Input('gender-dropdown2', 'value'),
+     Input('subject-dropdown2', 'value')]
 )
-def update_heatmap(selected_gender, selected_subject):
-    filtered_df = df3[df3['Gender'] == selected_gender]
+def update_heatmap(selected_gender2, selected_subject2):
+    filtered_df = df3[df3['Gender'] == selected_gender2]
 
     # Get the column names for the selected subject
-    attendance_column = f'{selected_subject}_Th_%Attended'
-    marks_column = f'{selected_subject}_Marks'
+    attendance_column = f'{selected_subject2}_Th_%Attended'
+    marks_column = f'{selected_subject2}_Marks'
 
     # Create heatmap data
     heatmap_data = filtered_df.groupby(attendance_column)[marks_column].mean().reset_index()
 
-    heatmap = go.Figure(data=go.Heatmap(
+    heatmap7 = go.Figure(data=go.Heatmap(
         z=heatmap_data[marks_column].values.reshape(1, -1),  # Reshape data for heatmap
         x=heatmap_data[attendance_column].values,
         y=['Average Marks'],  # You can customize y-axis labels if needed
         colorscale='Viridis',  # Choose a colorscale
     ))
 
-    heatmap.update_layout(
-        title=f'Heatmap: Attendance vs Marks for {selected_subject}',
+    heatmap7.update_layout(
+        title=f'Heatmap: Attendance vs Marks for {selected_subject2}',
         xaxis_title='Attendance Percentage',
         yaxis_title='Average Marks',
     )
 
-    return heatmap
+    return heatmap7
 
 if __name__ == '__main__':
     app.run_server(debug=True)
