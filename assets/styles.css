@@ -3,10 +3,29 @@ body {
     color: #FFFFFF; /* White text color */
 }
 
+.dynamic-plots-container{
+    margin-left: 250px; /* Adjust this value based on the sidebar width */
+    padding: 20px;
+}
 
-#bar-chart, #heatmap, #scatter-plot, #pie-chart {
+#bar-chart, #heatmap, #scatter-plot, #pie-chart{
     background-color: #333333; /* Darker gray background color for charts */
     
+}
+/* Dark background color for the plot div */
+.attendance-marks-scatter {
+    background-color: rgb(22, 22, 22);
+}
+
+/* Dark background color for dropdown bars */
+.Select-control,
+.Select-menu-outer {
+    background-color: rgb(20, 20, 20);
+}
+
+/* Text color for dropdown options */
+.Select-option {
+    color: white;
 }
 
 .grid-container {
@@ -60,4 +79,12 @@ body {
 .content {
     margin-left: 250px; /* Adjust this value based on the sidebar width */
     padding: 20px;
+}
+
+.dropdown-style .Select-control {
+    background-color: #333;  /* Darker background color for the dropdown bar */
+}
+
+.subject-dropdown{
+    background-color: #333;
 }
