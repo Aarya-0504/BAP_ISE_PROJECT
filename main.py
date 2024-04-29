@@ -69,7 +69,24 @@ sidebar = html.Div(
 introduction_page = html.Div(
     [
         html.H1('Welcome to Attendance Dashboard'),
+        html.H2("Data Integration and Preprocessing"),
         html.P('This is an introduction page for the attendance dashboard.'),
+        html.P('Collecting and integrating attendance data for each student across subjects and months.'),
+        html.P('Preprocessing the data to ensure consistency and accuracy, handling missing values and outliers.'),
+        html.H2("Attendance Visualization"),
+        html.P('Creating interactive attendance graphs for each student, displaying attendance percentages over time.'),
+        html.P('Customizing the visualizations to include options for filtering by subject, month, and individual student.'),
+        #html.P('Preprocessing the data to ensure consistency and accuracy, handling missing values and outliers.'),
+        html.H2("Resource Allocation Recommendations"),
+        html.P('Recommendations for resource allocation adjustments during periods of low attendance'),
+        html.P('Highlight areas where resources can be optimized, such as adjusting faculty hours, redistributing classroom spaces, or enhancing teaching strategies.'),
+       # html.P('Preprocessing the data to ensure consistency and accuracy, handling missing values and outliers.'),
+        html.H2("Trends and Insights"),
+        html.P('Analyzing attendance trends to identify patterns and outliers.'),
+        html.P('Generating summary statistics and insights regarding overall attendance rates, subject-wise attendance variations, and month-to-month trends.'),
+        #html.P('Preprocessing the data to ensure consistency and accuracy, handling missing values and outliers.'),
+
+
     ],
     className='content',
 )
@@ -291,7 +308,7 @@ def update_figures(bar_chart, heatmap, scatter_plot, pie_chart):
     scatter_plot = go.Figure()
     for i, subject in enumerate(subjects):
         scatter_plot.add_trace(go.Scatter(x=df[f'{subject}_JAN_no'] + df[f'{subject}_FEB_no'] + df[f'{subject}_MAR_no'],
-                                          y=df[f'{subject}_JAN'] + df[f'{subject}_FEB'] + df[f'{subject}_MAR'],
+                                          y=(df[f'{subject}_JAN'] + df[f'{subject}_FEB'] + df[f'{subject}_MAR'])/3,
                                           mode='markers', marker=dict(color=colors[i]), name=subject))
     scatter_plot.update_xaxes(title_text='Total Lecture Count')
     scatter_plot.update_yaxes(title_text='Attendance Percentage')
